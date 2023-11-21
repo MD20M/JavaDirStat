@@ -1,29 +1,46 @@
 package com.md20m.javadirstat.javadirstat;
 
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 public class FileTree {
     private TreeItem root;
     private TreeTableView<FileOBJ> treeTableView;
 
-    private TreeTableColumn<FileOBJ, String> treeTableColumn1;
-    private TreeTableColumn<FileOBJ, String> treeTableColumn2;
-    private TreeTableColumn<FileOBJ, String> treeTableColumn3;
+    private TreeTableColumn<FileOBJ, String> name;
+    private TreeTableColumn<FileOBJ, String> size;
+    private TreeTableColumn<FileOBJ, String> percentage;
+    TreeTableColumn<FileOBJ, Double> progressColumn;
     public FileTree(){
         treeTableView = new TreeTableView<FileOBJ>();
-        treeTableColumn1 = new TreeTableColumn<>("Name");
-        treeTableColumn2= new TreeTableColumn<>("Size");
-        treeTableColumn3= new TreeTableColumn<>("Percentage");
-        treeTableColumn1.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
-        treeTableColumn2.setCellValueFactory(new TreeItemPropertyValueFactory<>("size"));
-        treeTableColumn3.setCellValueFactory(new TreeItemPropertyValueFactory<>("percentage"));
+        name = new TreeTableColumn<>("Name");
+        size = new TreeTableColumn<>("Size");
+        percentage = new TreeTableColumn<>("Percentage");
+        progressColumn = new TreeTableColumn<>("Graph");
+        name.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
+        size.setCellValueFactory(new TreeItemPropertyValueFactory<>("size"));
+        percentage.setCellValueFactory(new TreeItemPropertyValueFactory<>("percentage"));
+        progressColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("numPercentage"));
 
-        treeTableView.getColumns().add(treeTableColumn1);
-        treeTableView.getColumns().add(treeTableColumn2);
-        treeTableView.getColumns().add(treeTableColumn3);
+        progressColumn.setCellFactory(column -> new TreeTableCell<>() {
+            final ProgressBar progressBar = new ProgressBar();
+            @Override
+            protected void updateItem(Double item, boolean empty) {
+                //System.out.println(item);
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setGraphic(null);
+                } else {
+                    progressBar.setProgress(item);
+                    setGraphic(progressBar);
+                }
+            }
+        });
+
+        treeTableView.getColumns().add(name);
+        treeTableView.getColumns().add(size);
+        treeTableView.getColumns().add(percentage);
+        treeTableView.getColumns().add(progressColumn);
     }
 
     public TreeTableView<FileOBJ> getTree(String path){

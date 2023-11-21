@@ -7,6 +7,8 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileScan {
     private String path;
@@ -25,11 +27,13 @@ public class FileScan {
         // Check if the input path is a directory.
         if (file.isDirectory()) {
             // Display all the files in the directory and its subdirectories.
-            long size = 0;
-            size=calculateFolderSize(file);
+
+            Map<String, Long> folderSizeMap = calculateFolderSizes(file);
+            long size = folderSizeMap.get(file.getName());
             this.fullSize=size;
-            pathTree = new TreeItem(new FileOBJ(this.path, size, "100%"));
-            displayFiles(file, pathTree);
+            FileOBJ parent = new FileOBJ(this.path, size, "100%", null);
+            pathTree = new TreeItem(parent);
+            displayFiles(file, pathTree, folderSizeMap, parent);
         } else {
             // Display the file name and size.
             TreeItem fileAdd = new TreeItem(new FileOBJ(file.getName(), file.length(), ""));
@@ -37,7 +41,7 @@ public class FileScan {
             //System.out.println(file.getName() + " | " + file.length());
         }
     }
-    private void displayFiles(File file, TreeItem folder) {
+    private void displayFiles(File file, TreeItem folder, Map<String, Long> folderSizeMap, FileOBJ parent) {
         DecimalFormat numberFormat = new DecimalFormat("#0.00");
 
         File[] files = file.listFiles();
@@ -47,31 +51,37 @@ public class FileScan {
         }
         // Iterate over the list of files and display each file name and size.
         for (File f : files) {
+            //System.out.println(f.getName());
             if (f.isDirectory()) {
                 // Indent the folder name.
-                long size = 0;
-                size += calculateFolderSize(f);
-                TreeItem folder2 = new TreeItem(new FileOBJ(f.getName(), size, (numberFormat.format(calculatePercentage(size))+"%")));
+                //System.out.println(f.getName());
+                long size = folderSizeMap.get(f.getName());
+                FileOBJ parent2 = new FileOBJ(f.getName(), size, (numberFormat.format(calculatePercentage(size))+"%"), parent);
+                //parent.setParent(parent);
+                TreeItem folder2 = new TreeItem(parent2);
                 folder.getChildren().add(folder2);
 
                 // Display the contents of the folder.
                 //System.out.println(f.getName());
-                displayFiles(f, folder2);
+                displayFiles(f, folder2, folderSizeMap, parent);
             } else {
-                // Indent the file name.
-                TreeItem fileAdd = new TreeItem(new FileOBJ(f.getName(), f.length(), (numberFormat.format(calculatePercentage(f.length()))+"%")));
+                // Indent the file name
+                TreeItem fileAdd = new TreeItem(new FileOBJ(f.getName(), f.length(), (numberFormat.format(calculatePercentage(f.length()))+"%"), parent));
                 folder.getChildren().add(fileAdd);
                 //System.out.println(f.getName() + " | " + f.length());
             }
         }
     }
 
-    private static long calculateFolderSize(File folder) {
-        // Check if the folder is null.
-        if (folder == null) {
-            return 0;
-        }
+    private static Map<String, Long> calculateFolderSizes(File folder) {
+        Map<String, Long> folderSizeMap = new HashMap<String, Long>();
+        var folderSize = calculateFolderSizes(folder, folderSizeMap);
+        folderSizeMap.put(folder.getName(), folderSize);
+        return folderSizeMap;
+    }
 
+
+    private static long calculateFolderSizes(File folder, Map<String, Long> folderSizeMap) {
         // Get a list of all the files in the folder.
         File[] files = folder.listFiles();
         if (files == null) {
@@ -82,12 +92,13 @@ public class FileScan {
         long totalSize = 0;
         for (File f : files) {
             if (f.isDirectory()) {
-                totalSize += calculateFolderSize(f);
+                totalSize += calculateFolderSizes(f, folderSizeMap);
             } else {
                 totalSize += f.length();
             }
         }
 
+        folderSizeMap.put(folder.getName(), totalSize);
         return totalSize;
     }
 

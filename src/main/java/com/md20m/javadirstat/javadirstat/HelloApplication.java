@@ -50,7 +50,7 @@ public class HelloApplication extends Application {
         StackPane root = new StackPane();
         root.getChildren().add(tree);*/
         FileTree tree = new FileTree();
-        TreeTableView<FileOBJ> treeData = tree.getTree("C:\\Users\\Maj\\AppData\\Roaming\\.minecraft");
+        TreeTableView<FileOBJ> treeData = tree.getTree("E:\\Emporia");
         vb.getChildren().add(treeData);
 
         TextField t = new TextField();
@@ -60,6 +60,7 @@ public class HelloApplication extends Application {
         b.setOnAction(event -> {
             vb.getChildren().set(1, tree.getTree(t.getText()));
         });
+
         vb.getChildren().add(t);
         vb.getChildren().add(b);
         // create a scene
