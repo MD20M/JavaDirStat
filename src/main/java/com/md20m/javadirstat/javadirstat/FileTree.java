@@ -3,6 +3,8 @@ package com.md20m.javadirstat.javadirstat;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
+import java.util.Comparator;
+
 public class FileTree {
     private TreeItem root;
     private TreeTableView<FileOBJ> treeTableView;
@@ -10,7 +12,7 @@ public class FileTree {
     private TreeTableColumn<FileOBJ, String> name;
     private TreeTableColumn<FileOBJ, String> size;
     private TreeTableColumn<FileOBJ, String> percentage;
-    TreeTableColumn<FileOBJ, Double> progressColumn;
+    private TreeTableColumn<FileOBJ, Double> progressColumn;
     public FileTree(){
         treeTableView = new TreeTableView<FileOBJ>();
         name = new TreeTableColumn<>("Name");
@@ -18,7 +20,8 @@ public class FileTree {
         percentage = new TreeTableColumn<>("Percentage");
         progressColumn = new TreeTableColumn<>("Graph");
         name.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
-        size.setCellValueFactory(new TreeItemPropertyValueFactory<>("size"));
+        size.setCellValueFactory(new TreeItemPropertyValueFactory<>("betterSize"));
+        size.setComparator(new SizeComparator());
         percentage.setCellValueFactory(new TreeItemPropertyValueFactory<>("percentage"));
         progressColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("numPercentage"));
 

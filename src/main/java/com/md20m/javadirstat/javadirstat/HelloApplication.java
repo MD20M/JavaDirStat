@@ -50,7 +50,7 @@ public class HelloApplication extends Application {
         StackPane root = new StackPane();
         root.getChildren().add(tree);*/
         FileTree tree = new FileTree();
-        TreeTableView<FileOBJ> treeData = tree.getTree("E:\\Emporia");
+        TreeTableView<FileOBJ> treeData = tree.getTree("C:\\Users\\K06-DM-02\\.gradle");
         vb.getChildren().add(treeData);
 
         TextField t = new TextField();
