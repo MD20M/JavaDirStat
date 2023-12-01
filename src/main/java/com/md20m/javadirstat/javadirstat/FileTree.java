@@ -21,7 +21,7 @@ public class FileTree {
         progressColumn = new TreeTableColumn<>("Graph");
         name.setCellValueFactory(new TreeItemPropertyValueFactory<>("name"));
         size.setCellValueFactory(new TreeItemPropertyValueFactory<>("betterSize"));
-        size.setComparator(new SizeComparator());
+        //size.setComparator(Comparator.comparing());
         percentage.setCellValueFactory(new TreeItemPropertyValueFactory<>("percentage"));
         progressColumn.setCellValueFactory(new TreeItemPropertyValueFactory<>("numPercentage"));
 
@@ -48,6 +48,13 @@ public class FileTree {
 
     public TreeTableView<FileOBJ> getTree(String path){
         FileScan sc = new FileScan(path);
+        root = sc.getPathTree();
+        treeTableView.setRoot(root);
+        return treeTableView;
+    }
+
+    public TreeTableView<FileOBJ> getTree(){
+        FileScan sc = new FileScan(null);
         root = sc.getPathTree();
         treeTableView.setRoot(root);
         return treeTableView;

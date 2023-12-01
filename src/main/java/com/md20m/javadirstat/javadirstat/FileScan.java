@@ -111,6 +111,8 @@ public class FileScan {
     }
 
     public TreeItem getPathTree(){
+        if (this.path == null)
+            return pathTree;
         this.Scan();
         return pathTree;
     }

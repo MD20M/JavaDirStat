@@ -1,12 +1,16 @@
 package com.md20m.javadirstat.javadirstat;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -19,17 +23,19 @@ public class HelloApplication extends Application {
         s.setTitle("JavaDirStat");
 
         // create a menu
-        Menu m = new Menu("Menu");
+        Menu m = new Menu("File");
 
         // create menuitems
-        MenuItem m1 = new MenuItem("menu item 1");
-        MenuItem m2 = new MenuItem("menu item 2");
-        MenuItem m3 = new MenuItem("menu item 3");
+        MenuItem open = new MenuItem("Open");
+        MenuItem refresh = new MenuItem("Refresh");
+        MenuItem clear = new MenuItem("Clear");
+
+
 
         // add menu items to menu
-        m.getItems().add(m1);
-        m.getItems().add(m2);
-        m.getItems().add(m3);
+        m.getItems().add(open);
+        m.getItems().add(refresh);
+        m.getItems().add(clear);
 
         // create a menubar
         MenuBar mb = new MenuBar();
@@ -40,29 +46,60 @@ public class HelloApplication extends Application {
         // create a VBox
         VBox vb = new VBox(mb);
 
-        /*TreeItem<String> rootItem = new TreeItem<String> ("Inbox");
-        rootItem.setExpanded(true);
-        for (int i = 1; i < 6; i++) {
-            TreeItem<String> item = new TreeItem<String> ("Message" + i);
-            rootItem.getChildren().add(item);
-        }
-        TreeView<String> tree = new TreeView<String> (rootItem);
-        StackPane root = new StackPane();
-        root.getChildren().add(tree);*/
         FileTree tree = new FileTree();
-        TreeTableView<FileOBJ> treeData = tree.getTree("C:\\Users\\K06-DM-02\\.gradle");
+        TreeTableView<FileOBJ> treeData = tree.getTree();
         vb.getChildren().add(treeData);
 
         TextField t = new TextField();
+        String savedPath;
 
         Button b = new Button("Scan");
 
         b.setOnAction(event -> {
+            //savedPath = t.getText();
             vb.getChildren().set(1, tree.getTree(t.getText()));
         });
 
-        vb.getChildren().add(t);
-        vb.getChildren().add(b);
+        Popup popup = new Popup();
+        VBox pVB = new VBox();
+        Label label = new Label("Enter the folder path you want to scan");
+        pVB.setStyle("-fx-border-color: black ; -fx-border-width: 1; -fx-background-color: white; -fx-padding: 10; -fx-content-display: flex; -fx-alignment: center");
+        pVB.getChildren().addAll(label, t, b);
+        pVB.setSpacing(5);
+
+        // add the label
+        popup.getContent().add(pVB);
+        popup.setHeight(100);
+        popup.setWidth(120);
+        // set auto hide
+        popup.setAutoHide(true);
+
+        // set size of label
+        label.setMinWidth(80);
+        label.setMinHeight(50);
+
+        // action event
+        open.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                if (!popup.isShowing())
+                    popup.show(s);
+                else
+                    popup.hide();
+            }
+        });
+        refresh.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                vb.getChildren().set(1, tree.getTree(t.getText()));
+            }
+        });
+        clear.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                vb.getChildren().set(1, tree.getTree(null));
+            }
+        });
+
+        //vb.getChildren().add(t);
+        //vb.getChildren().add(b);
         // create a scene
         Scene sc = new Scene(vb, 500, 300);
 
