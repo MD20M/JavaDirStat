@@ -24,6 +24,7 @@ public class FileScan {
         File file = new File(path);
         //pathTree = new TreeItem(new FileOBJ(this.path, file.length()));
         System.out.println("Name: " + file.getName() + " Length: " + file.length());
+        String path = file.getPath();
         // Check if the input path is a directory.
         if (file.isDirectory()) {
             // Display all the files in the directory and its subdirectories.
@@ -31,12 +32,12 @@ public class FileScan {
             Map<String, Long> folderSizeMap = calculateFolderSizes(file);
             long size = folderSizeMap.get(file.getName());
             this.fullSize=size;
-            FileOBJ parent = new FileOBJ(this.path, size, "100%", null);
+            FileOBJ parent = new FileOBJ(this.path, size, "100%", null, path);
             pathTree = new TreeItem(parent);
             displayFiles(file, pathTree, folderSizeMap, parent);
         } else {
             // Display the file name and size.
-            TreeItem fileAdd = new TreeItem(new FileOBJ(file.getName(), file.length(), ""));
+            TreeItem fileAdd = new TreeItem(new FileOBJ(file.getName(), file.length(), "", path));
             pathTree.getChildren().add(fileAdd);
             //System.out.println(file.getName() + " | " + file.length());
         }
@@ -51,12 +52,14 @@ public class FileScan {
         }
         // Iterate over the list of files and display each file name and size.
         for (File f : files) {
+            String path = file.getAbsolutePath();
             //System.out.println(f.getName());
             if (f.isDirectory()) {
+                System.out.println(path + "PATH!");
                 // Indent the folder name.
                 //System.out.println(f.getName());
                 long size = folderSizeMap.get(f.getName());
-                FileOBJ parent2 = new FileOBJ(f.getName(), size, (numberFormat.format(calculatePercentage(size))+"%"), parent);
+                FileOBJ parent2 = new FileOBJ(f.getName(), size, (numberFormat.format(calculatePercentage(size))+"%"), parent, path);
                 //parent.setParent(parent);
                 TreeItem folder2 = new TreeItem(parent2);
                 folder.getChildren().add(folder2);
@@ -66,7 +69,8 @@ public class FileScan {
                 displayFiles(f, folder2, folderSizeMap, parent);
             } else {
                 // Indent the file name
-                TreeItem fileAdd = new TreeItem(new FileOBJ(f.getName(), f.length(), (numberFormat.format(calculatePercentage(f.length()))+"%"), parent));
+                System.out.println(path + "PATH!");
+                TreeItem fileAdd = new TreeItem(new FileOBJ(f.getName(), f.length(), (numberFormat.format(calculatePercentage(f.length()))+"%"), parent, path));
                 folder.getChildren().add(fileAdd);
                 //System.out.println(f.getName() + " | " + f.length());
             }

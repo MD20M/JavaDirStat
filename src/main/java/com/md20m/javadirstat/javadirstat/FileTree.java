@@ -2,7 +2,9 @@ package com.md20m.javadirstat.javadirstat;
 
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 
 public class FileTree {
@@ -44,6 +46,7 @@ public class FileTree {
         treeTableView.getColumns().add(size);
         treeTableView.getColumns().add(percentage);
         treeTableView.getColumns().add(progressColumn);
+        treeTableView.setContextMenu(getContextMenu()); // Add context menu to tree view
     }
 
     public TreeTableView<FileOBJ> getTree(String path){
@@ -63,5 +66,42 @@ public class FileTree {
     public void setTree(String path){
         FileScan sc = new FileScan(path);
         root = sc.getPathTree();
+    }
+
+    private ContextMenu getContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem openFile = new MenuItem("Open File");
+        openFile.setOnAction(event -> {
+            TreeItem<FileOBJ> selectedTreeItem = treeTableView.getSelectionModel().getSelectedItem();
+            if (selectedTreeItem != null) {
+                FileOBJ fileOBJ = selectedTreeItem.getValue();
+                // Open the file here
+                try {
+                    System.out.println(fileOBJ.getPath());
+                    Desktop.getDesktop().open(new File(fileOBJ.getPath()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("Opening file: " + fileOBJ.getName());
+            }
+        });
+        MenuItem deleteFile = new MenuItem("Delete File");
+        deleteFile.setOnAction(event -> {
+            TreeItem<FileOBJ> selectedTreeItem = treeTableView.getSelectionModel().getSelectedItem();
+            if (selectedTreeItem != null) {
+                FileOBJ fileOBJ = selectedTreeItem.getValue();
+                // Open the file here
+                try {
+                    System.out.println(fileOBJ.getPath());
+                    File f = new File(fileOBJ.getPath());
+                    f.delete();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("Opening file: " + fileOBJ.getName());
+            }
+        });
+        contextMenu.getItems().addAll(openFile, deleteFile);
+        return contextMenu;
     }
 }

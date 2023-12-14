@@ -7,14 +7,16 @@ public class FileOBJ {
     protected String percentage;
     protected double numPercentage;
     protected FileOBJ parent;
+    protected String path;
 
-    public FileOBJ (String name, long size, String percentage){
+    public FileOBJ (String name, long size, String percentage, String path){
         this.name = name;
         this.size = size;
         this.percentage = percentage;
         this.numPercentage = this.getNumPercentage();
+        this.path = path;
     }
-    public FileOBJ (String name, long size, String percentage, FileOBJ parent){
+    public FileOBJ (String name, long size, String percentage, FileOBJ parent, String path){
         this.name = name;
         this.size = size;
         this.betterSize = this.convertBytesToString();
@@ -22,8 +24,10 @@ public class FileOBJ {
         this.percentage = percentage;
         this.numPercentage = this.getNumPercentage();
         this.parent = parent;
+        System.out.println(this.path);
+        this.path = path;
     }
-
+    public String getPath() { return path; }
     public String getName() {
         return name;
     }
