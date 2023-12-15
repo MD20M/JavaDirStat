@@ -5,6 +5,7 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Comparator;
 
 public class FileTree {
@@ -63,9 +64,18 @@ public class FileTree {
         return treeTableView;
     }
 
+    public TreeItem getRoot(){
+        return root;
+    }
+
     public void setTree(String path){
         FileScan sc = new FileScan(path);
         root = sc.getPathTree();
+    }
+
+    public TreeTableView<FileOBJ> setView(TreeTableView<FileOBJ> treeS){
+        treeTableView = treeS;
+        return treeTableView;
     }
 
     private ContextMenu getContextMenu() {

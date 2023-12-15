@@ -1,6 +1,8 @@
 package com.md20m.javadirstat.javadirstat;
 
-public class FileOBJ {
+import java.io.Serializable;
+
+public class FileOBJ implements Serializable {
     protected long size;
     protected String betterSize;
     protected String name;

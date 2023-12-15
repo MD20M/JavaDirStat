@@ -10,9 +10,12 @@ import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 public class HelloApplication extends Application {
@@ -29,6 +32,8 @@ public class HelloApplication extends Application {
         MenuItem open = new MenuItem("Open");
         MenuItem refresh = new MenuItem("Refresh");
         MenuItem clear = new MenuItem("Clear");
+        MenuItem cache = new MenuItem("Cache path");
+        MenuItem deCache = new MenuItem("DeCache");
 
 
 
@@ -36,6 +41,7 @@ public class HelloApplication extends Application {
         m.getItems().add(open);
         m.getItems().add(refresh);
         m.getItems().add(clear);
+        m.getItems().add(cache);
 
         // create a menubar
         MenuBar mb = new MenuBar();
@@ -95,6 +101,25 @@ public class HelloApplication extends Application {
         clear.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
                 vb.getChildren().set(1, tree.getTree(null));
+            }
+        });
+        // CACHING IN DEVELOPMENT
+        cache.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e) {
+                DirectoryChooser chooser = new DirectoryChooser();
+                chooser.setTitle("JavaFX Projects");
+
+                File defaultDirectory = new File("c:/");
+                chooser.setInitialDirectory(defaultDirectory);
+                File selectedDirectory = chooser.showDialog(s);
+                String cPath = selectedDirectory.getAbsolutePath();
+                System.out.println(cPath);
+                Serializer s = new Serializer();
+                try {
+                    s.serialise(tree.getRoot());
+                } catch (Exception ex) {
+                    System.out.println(ex);
+                }
             }
         });
 
